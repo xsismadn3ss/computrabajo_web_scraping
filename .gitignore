@@ -3,6 +3,11 @@ node_modules/
 package-lock.json
 yarn.lock
 
+# virtual environment
+.env
+.venv
+env/
+
 # Environment variables
 .env
 .env.local
@@ -38,3 +43,6 @@ temp/
 anthropic.key
 *.pem
 *.key
+
+# misc
+__pycache__/
