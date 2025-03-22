@@ -6,10 +6,33 @@ import requests
 from data_types.scrap_params import ScrapParams
 
 
-def scrap_page(scrap_params: ScrapParams):
-    print(f"Scraping: {scrap_params.url.format(scrap_params.actual_page)}....")
+def look_total_jobs(scrap_params: ScrapParams, job: str, loaction: str) -> str:
+    print(
+        f"Scraping: {scrap_params.url.format(job, loaction, scrap_params.actual_page)}...."
+    )
     res = requests.get(
-        url=scrap_params.url.format(scrap_params.actual_page),
+        url=scrap_params.url.format(job, loaction, scrap_params.actual_page),
+        headers=scrap_params.headers,
+    )
+    scrap_params.job = job
+    scrap_params.location = loaction
+
+    if not res.ok:
+        return []
+    # guardar todo el html
+    soup = BeautifulSoup(res.text, "html.parser")
+    total_div = soup.find("div", class_="box_title")
+    total_h1 = total_div.find("h1", class_="title_page").find("span")
+    total = total_h1.text.strip().replace(" ", "")
+    return total
+
+
+def scrap_page(scrap_params: ScrapParams, job: str, location: str) -> None:
+    print(
+        f"Scraping: {scrap_params.url.format(job, location, scrap_params.actual_page)}...."
+    )
+    res = requests.get(
+        url=scrap_params.url.format(job, location, scrap_params.actual_page),
         headers=scrap_params.headers,
     )
     if not res.ok:
