@@ -22,9 +22,10 @@ def scrap_boxes(soup: BeautifulSoup, boxes) -> list[Offer]:
                     salary = misc.text.strip()
                 else:
                     mode = misc.text.strip()
-
+                    
         offer = Offer(title, company, location, mode, salary, published)
-        if offer.company:
-            research.companies.add(offer.company)
-        research.locations.add(offer.location)
-        research.offers.append(offer)
+        
+        research.add_offer(offer)
+        research.add_by_company(offer)
+        research.add_by_location(offer)
+        research.add_by_mode(offer)
