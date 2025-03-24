@@ -1,8 +1,9 @@
-from utils.scrap_page import scrap_page, look_total_jobs
+from utils.scrap_page import scrap_page, look_total_jobs, get_file
 from data_types.research import research
 from data_types.scrap_params import ScrapParams
-from icecream import ic
 import click
+import colorama
+import os
 
 scrap_params = ScrapParams(
     url="https://sv.computrabajo.com/trabajo-de-{}-en-{}?p={}",
@@ -23,19 +24,55 @@ def cli():
 
 @cli.command()
 @click.option(
-    "--job", prompt="indica el trabajo que deseas buscar: ", help="Trabajo a buscar"
+    "--job", prompt="indica el trabajo que deseas buscar ", help="Trabajo a buscar"
 )
 @click.option(
     "--location",
-    prompt="indica la ubicación que deseas buscar: ",
-    help="Ubicación a buscar",
+    prompt="indica la ubicación que deseas buscar ",
     default="san salvador",
+    help="ubicación a buscar",
 )
-def total_jobs(job: str, location: str):
+def download_files(job: str, location: str):
+    """
+    - DOWNLOAD FILES \n
+    Antes de analizar los datos es necesario descargar los documentos HTML
+    para no sobrecargar la página.
+
+    description - descargar archivos para analizar
+    """
     location = location.replace(" ", "-")
     job = job.replace(" ", "-")
-    total = look_total_jobs(scrap_params, job, location)
-    print(f"{total} trabajos de {scrap_params.job.replace('-', ' ')}")
+
+    if not os.path.exists("downloads"):
+        os.makedirs("downloads")
+    for file in os.listdir("downloads"):
+        file_path = os.path.join("downloads", file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+    get_file(scrap_params, job, location)
+    while True:
+        if scrap_params.actual_page > scrap_params.total_pages:
+            print("download complete")
+            break
+        get_file(scrap_params, job, location)
+
+
+@cli.command()
+def total_jobs():
+    """
+    - TOTAL JOBS
+
+    decription - ver numero de ofertas encontradas
+    """
+    try:
+        total = look_total_jobs()
+        print(total)
+    except FileNotFoundError as e:
+        print(e)
+        print(
+            f"No hay archivos HTML descargados para descargar ejecuta {colorama.Back.CYAN}download-files{colorama.Back.RESET} para descargar los archivos"
+        )
 
 
 @cli.command()
