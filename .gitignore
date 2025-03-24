@@ -46,3 +46,4 @@ anthropic.key
 
 # misc
 __pycache__/
+/downloads
