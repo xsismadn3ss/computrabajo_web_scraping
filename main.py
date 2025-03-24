@@ -1,6 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
-from data_types.offer import Offer
 from utils.scrap_page import scrap_page, look_total_jobs
 from data_types.research import research
 from data_types.scrap_params import ScrapParams
@@ -69,7 +66,7 @@ def companies(job: str, location: str):
     help="Ubicación a buscar",
     default="san salvador",
 )
-def scrap(param: str, location: str):
+def scrap(job: str, location: str):
     location = location.replace(" ", "-")
     param = job.replace(" ", "-")
     scrap_page(scrap_params)
