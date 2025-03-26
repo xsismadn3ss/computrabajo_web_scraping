@@ -105,8 +105,8 @@ def companies(job: str, location: str):
 )
 def scrap(job: str, location: str):
     location = location.replace(" ", "-")
-    param = job.replace(" ", "-")
-    scrap_page(scrap_params)
+    job = job.replace(" ", "-")
+    scrap_page(scrap_params, job, location)
 
 
 if __name__ == "__main__":
